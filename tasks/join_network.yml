@@ -1,12 +1,29 @@
 ---
 - block: # Join Zerotier network
   - name: Get Zerotier NodeID
-    shell: zerotier-cli info | awk '{print $3}'
-    register: nodeid
+    shell: zerotier-cli info -j
+    register: zerotier_info
 
-  - name: Set NodeID as fact
+  - name: Join Zerotier network
+    command: zerotier-cli join -j {{ zerotier_network_id }}
+    args:
+      creates: /var/lib/zerotier-one/networks.d/{{ zerotier_network_id }}.conf
+    register: zerotier_network
+
+  - name: zerotier | dump network response
+    debug:
+      var:  zerotier_network.stdout
+      verbosity: 2
+    tags:
+      - debug
+
+  - name: zerotier | register responses
     set_fact:
-      zerotier_node_id: "{{ nodeid.stdout }}"
+      zerotier_node_id: "{{ (zerotier_info.stdout |from_json).address }}"
+      zerotier_device:  "{{ (zerotier_network.stdout |from_json).portDeviceName }}"
+      zerotier_name:    "{{ (zerotier_network.stdout |from_json).name }}"
+      zerotier_ip:      "{{ (zerotier_network.stdout |from_json).assignedAddresses }}"
+      zerotier_status:  "{{ (zerotier_network.stdout |from_json).status }}"
 
   - name: Add and authorize members to network
     uri:
@@ -15,20 +32,25 @@
       headers:
         Authorization: bearer {{ zerotier_accesstoken }}
       body:
-        name: "{{ inventory_hostname }}"
+        name: "{{ zerotier_name }}"
+        description: "{{ zerotier_description }}"
         hidden: false
         config:
           authorized: true
       body_format: json
+      return_content: yes
     register: apiresult
 
-  - name: Join Zerotier network
-    command: zerotier-cli join {{ zerotier_network_id }}
-    args:
-      creates: /var/lib/zerotier-one/networks.d/{{ zerotier_network_id }}.conf
+  - name: zerotier | dump authorisation response
+    debug:
+      var: apiresult
+      verbosity: 2
+    tags:
+      - debug
 
   when:
   - zerotier_accesstoken is defined
   - not ansible_check_mode
   tags:
+  - zerotier
   - configuration
