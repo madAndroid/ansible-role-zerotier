@@ -26,6 +26,10 @@
       zerotier_ip:       "{{ (zerotier_network.stdout |from_json).assignedAddresses }}"
       zerotier_status:   "{{ (zerotier_network.stdout |from_json).status }}"
 
+  - name: zerotier | Pause for 10 seconds before authorising the node
+    pause:
+      seconds: 10
+
   - name: Add and authorize members to network
     uri:
       url: "{{ zerotier_api_url }}/api/network/{{ zerotier_network_id }}/member/{{ zerotier_node_id }}"
