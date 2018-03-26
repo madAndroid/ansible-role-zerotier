@@ -26,9 +26,24 @@
       zerotier_ip:       "{{ (zerotier_network.stdout |from_json).assignedAddresses }}"
       zerotier_status:   "{{ (zerotier_network.stdout |from_json).status }}"
 
-  - name: zerotier | Pause for 30 seconds before authorising the node
+  - name: zerotier | Pause for 3 seconds before authorising the node
     pause:
-      seconds: 30
+      seconds: 3
+
+  - name: Notify API of members to authorise
+    uri:
+      url: "{{ zerotier_api_url }}/api/network/{{ zerotier_network_id }}/member/{{ zerotier_node_id }}"
+      method: POST
+      headers:
+        Authorization: bearer {{ zerotier_accesstoken }}
+      body:
+        config:
+          authorized: true
+      body_format: json
+
+  - name: zerotier | Pause for 3 seconds before authorising the node
+    pause:
+      seconds: 3
 
   - name: Add and authorize members to network
     uri:
