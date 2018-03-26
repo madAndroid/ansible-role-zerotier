@@ -20,11 +20,11 @@
 
   - name: zerotier | register responses
     set_fact:
-      zerotier_node_id: "{{ (zerotier_info.stdout |from_json).address }}"
-      zerotier_device:  "{{ (zerotier_network.stdout |from_json).portDeviceName }}"
-      zerotier_name:    "{{ (zerotier_network.stdout |from_json).name }}"
-      zerotier_ip:      "{{ (zerotier_network.stdout |from_json).assignedAddresses }}"
-      zerotier_status:  "{{ (zerotier_network.stdout |from_json).status }}"
+      zerotier_node_id:  "{{ (zerotier_info.stdout |from_json).address }}"
+      zerotier_device:   "{{ (zerotier_network.stdout |from_json).portDeviceName }}"
+      zerotier_net_name: "{{ (zerotier_network.stdout |from_json).name }}"
+      zerotier_ip:       "{{ (zerotier_network.stdout |from_json).assignedAddresses }}"
+      zerotier_status:   "{{ (zerotier_network.stdout |from_json).status }}"
 
   - name: Add and authorize members to network
     uri:
