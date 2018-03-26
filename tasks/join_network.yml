@@ -2,6 +2,7 @@
 - block: # Join Zerotier network
   - name: Get Zerotier NodeID
     shell: zerotier-cli info -j
+    check_mode: no
     register: zerotier_info
 
   - name: Join Zerotier network
