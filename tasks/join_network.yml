@@ -7,8 +7,8 @@
 
   - name: Join Zerotier network
     command: zerotier-cli join -j {{ zerotier_network_id }}
-    args:
-      creates: /var/lib/zerotier-one/networks.d/{{ zerotier_network_id }}.conf
+    check_mode: no
+    changed_when: false
     register: zerotier_network
 
   - name: zerotier | dump network response
