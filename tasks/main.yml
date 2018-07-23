@@ -8,5 +8,4 @@
 
 - include_tasks: join_network.yml
   when:
-  - 'zerotier_network_id not in joinednetworks.stdout'
   - zerotier_accesstoken is defined
