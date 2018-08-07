@@ -76,8 +76,8 @@
             - ["{{ zerotier_group_id }}","{{ zerotier_role_id }}"]
       body_format: json
       return_content: yes
+      when: zerotier_group_id is defined and zerotier_group_id is defined
     register: group_result
-    when: "{{ zerotier_group_id }}" is defined and "{{ zerotier_group_id }}" is defined
 
   - name: zerotier | dump authorisation response
     debug:
