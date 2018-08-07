@@ -61,9 +61,34 @@
       return_content: yes
     register: apiresult
 
+  - name: Add members to group (add tags)
+    uri:
+      url: "{{ zerotier_api_url }}/api/network/{{ zerotier_network_id }}/member/{{ zerotier_node_id }}/"
+      method: POST
+      headers:
+        Authorization: bearer {{ zerotier_accesstoken }}
+      body:
+        name: "{{ zerotier_name }}"
+        description: "{{ zerotier_description }}"
+        hidden: false
+        config:
+          tags:
+            - ["{{ zerotier_group_id }}","{{ zerotier_role_id }}"]
+      body_format: json
+      return_content: yes
+    register: group_result
+    when: "{{ zerotier_group_id }}" is defined and "{{ zerotier_group_id }}" is defined
+
   - name: zerotier | dump authorisation response
     debug:
       var: apiresult
+      verbosity: 2
+    tags:
+      - debug
+
+  - name: zerotier | dump group response
+    debug:
+      var: group_result
       verbosity: 2
     tags:
       - debug
