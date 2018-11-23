@@ -63,7 +63,7 @@
 
   - name: Add members to group (add tags)
     uri:
-      url: "{{ zerotier_api_url }}/api/network/{{ zerotier_network_id }}/member/{{ zerotier_node_id }}/"
+      url: "{{ zerotier_api_url }}/api/network/{{ zerotier_network_id }}/member/{{ zerotier_node_id }}"
       method: POST
       headers:
         Authorization: bearer {{ zerotier_accesstoken }}
