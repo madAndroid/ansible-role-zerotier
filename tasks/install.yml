@@ -28,7 +28,7 @@
     register: zerotier_repo
 
   - name: Install zerotier
-    shell: curl -s 'https://pgp.mit.edu/pks/lookup?op=get&search=0x1657198823E52A61' | gpg --import && \
+    shell: curl -s 'https://raw.githubusercontent.com/zerotier/ZeroTierOne/master/doc/contact%40zerotier.com.gpg' | gpg --import && \
                if z=$(curl -s 'https://install.zerotier.com/' | gpg); then echo "$z" | sudo bash; fi
     register: zerotier_repo
     when: zerotier_repo.stat.exists == False
